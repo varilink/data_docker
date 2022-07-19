@@ -1,3 +1,9 @@
 [submodule "tools-proxy"]
 	path = tools-proxy
 	url = git@github.com:varilink/tools-proxy.git
+[submodule "app/data-app"]
+	path = app/data-app
+	url = git@github.com:varilink/data-app.git
+[submodule "app/data-templates"]
+	path = app/data-templates
+	url = git@github.com:varilink/data-templates.git
