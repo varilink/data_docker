@@ -7,3 +7,6 @@
 [submodule "app/data-templates"]
 	path = app/data-templates
 	url = git@github.com:varilink/data-templates.git
+[submodule "web/data-web"]
+	path = web/data-web
+	url = git@github.com:varilink/data-web.git
