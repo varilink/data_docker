@@ -1,0 +1,3 @@
+[submodule "tools-proxy"]
+	path = tools-proxy
+	url = git@github.com:varilink/tools-proxy.git
