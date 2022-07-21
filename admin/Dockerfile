@@ -1,0 +1,38 @@
+FROM debian:buster
+LABEL maintainer='david.williamson@varilink.co.uk'
+
+# NOTE: rsync is only required in this container environment
+RUN                                                                            \
+  apt-get update                                                            && \
+  apt-get --yes --no-install-recommends install                                \
+    python3-pip                                                                \
+    python3                                                                    \
+    rsync                                                                      \
+    uwsgi                                                                      \
+    uwsgi-plugin-python3                                                    && \
+  pip3 install                                                                 \
+    django==3.2.4                                                              \
+    python-dateutil==2.8.1                                                  && \
+  django-admin startproject data
+
+WORKDIR /data
+
+# 1. Migrate to build the Django core database
+# 2. Create a superuser to use fir Django admin
+# 3. Create the whatson application
+RUN                                                                            \
+  python3 manage.py migrate                                                 && \
+  DJANGO_SUPERUSER_USERNAME=testuser                                           \
+  DJANGO_SUPERUSER_PASSWORD=testpass                                           \
+  DJANGO_SUPERUSER_EMAIL=testuser@localhost                                    \
+  python3 manage.py createsuperuser --noinput                               && \
+  python3 manage.py startapp whatson
+
+COPY data-admin/data/*.py data/
+COPY data-admin/whatson/*.py whatson/
+
+COPY docker-entrypoint.sh /
+
+RUN chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT [ "/docker-entrypoint.sh" ]

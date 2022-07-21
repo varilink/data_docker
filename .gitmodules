@@ -10,3 +10,6 @@
 [submodule "web/data-web"]
 	path = web/data-web
 	url = git@github.com:varilink/data-web.git
+[submodule "admin/data-admin"]
+	path = admin/data-admin
+	url = git@github.com:varilink/data-admin.git
