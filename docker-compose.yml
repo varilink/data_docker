@@ -1,0 +1,98 @@
+version: '3.6'
+
+services:
+
+  # Service that combine to run the DATA website on the desktop
+
+  # web layer service
+  web:
+    build: ./web
+    image: varilink/data/web
+    container_name: ${DATA_WEB_HOST} # fixed for varilink/tools-proxy access
+    # See the .env file for explanatory comments on all these variables
+    environment:
+      - DATA_WEB_HOST
+      - DATA_APP_HOST
+      - DATA_APP_PORT
+      - DATA_ADMIN_HOST
+      - DATA_ADMIN_PORT
+    # The web layer passes requests through to the app and admin services and it
+    # sits behind the proxy service, so it depends on all three.
+    depends_on:
+      - app
+      - admin
+      - proxy
+    # Join the web layer to both the project's default network and its proxy
+    # network - see https://github.com/varilink/tools-proxy#readme.
+    networks:
+      - default
+      - proxy
+    volumes:
+      # Mount a folder containing a recent backup. The application data consists
+      # of:
+      # - core.db = Django core SQLite database
+      # - derbyartsandtheatre.db = Application's bespoke SQLite database
+      # - upload = Event image uploads folder
+      - ./backup/:/backup/:ro
+      # Template file used to configure nginx - see "Using environment variables
+      # in nginx configuration (new in 1.19)" in https://hub.docker.com/_/nginx.
+      - ./web/templates:/etc/nginx/templates:ro
+      # Static content provided by the varilink/data-web repository.
+      - ./web/data-web/html/assets/:/usr/share/nginx/html/assets/:ro
+      # Django static content
+      - django-static:/usr/share/nginx/html/static/:ro
+
+  # app layer service
+  app:
+    build: ./app
+    image: varilink/data/app
+    container_name: ${DATA_APP_HOST} # fixed for pass through from web layer
+    command: [ "--ini" , "/apps/data-app.ini" ]
+    environment:
+      - DATA_APP_IP
+      - DATA_APP_PORT
+    volumes:
+      # As above for the web layer service
+      - ./backup:/backup:ro
+      # Folder for SQLite databases that is shared by the app and admin
+      # services. It holds the bespoke application database as
+      # derbyartsandtheatre.db and the Django database as core.db.
+      - database:/database
+      # UWSGI app configurations
+      - ./app/uwsgi/ini/:/apps/:ro
+      # Application configuration files
+      - ./app/conf/:/usr/local/etc/data/:ro
+      # The application based on CGI::Application and taken from the data-app
+      # repository.
+      - ./app/data-app/:/usr/local/lib/site_perl/DATA/:ro
+      # Template Toolkit templates taken from the data-templates repository.
+      - ./app/data-templates:/usr/local/src/data:ro
+      # The PSGI application launch scripts
+      - ./app/uwsgi/psgi/:/usr/local/sbin/:ro
+
+  admin:
+    build: ./admin
+    image: varilink/data/admin
+    container_name: ${DATA_ADMIN_HOST} # fixed for pass through from web layer
+    command: [ "--ini" , "/apps/data-admin.ini" ]
+    environment:
+      - DATA_ADMIN_IP
+      - DATA_ADMIN_PORT
+    volumes:
+      - database:/database
+      # UWSGI app configurations
+      - ./admin/uwsgi:/apps
+      # Django migration files
+      - ./admin/data-admin/whatson/migrations:/data/whatson/migrations:ro
+      # Django static content
+      - django-static:/static
+
+volumes:
+  # An external volume for the static content that comes with Django. The admin
+  # service populates this when it installs Django. The web service can then
+  # serve this static content directly by having access to the same volume.
+  database:
+  # An external volume for the static content that comes with Django. The admin
+  # service populates this when it installs Django. The web service can then
+  # serve this static content directly by having access to the same volume.
+  django-static:
