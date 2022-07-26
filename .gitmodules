@@ -13,3 +13,6 @@
 [submodule "admin/data-admin"]
 	path = admin/data-admin
 	url = git@github.com:varilink/data-admin.git
+[submodule "tools-npm"]
+	path = tools-npm
+	url = git@github.com:varilink/tools-npm.git

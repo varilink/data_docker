@@ -38,7 +38,7 @@ services:
       # in nginx configuration (new in 1.19)" in https://hub.docker.com/_/nginx.
       - ./web/templates:/etc/nginx/templates:ro
       # Static content provided by the varilink/data-web repository.
-      - ./web/data-web/html/assets/:/usr/share/nginx/html/assets/:ro
+      - ./web/data-web/dist/:/usr/share/nginx/html/assets/:ro
       # Django static content
       - django-static:/usr/share/nginx/html/static/:ro
 
