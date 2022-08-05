@@ -10,3 +10,6 @@
 [submodule "tools-npm"]
 	path = tools-npm
 	url = git@github.com:varilink/tools-npm.git
+[submodule "app/data-app"]
+	path = app/data-app
+	url = git@github.com:varilink/data-app.git
