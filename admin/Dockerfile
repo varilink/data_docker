@@ -30,6 +30,9 @@ RUN                                                                            \
 
 COPY data-admin/data/*.py data/
 COPY data-admin/whatson/*.py whatson/
+# Copy migrations here rather than map them as a volume at runtime as we must
+# retain the __init__.py file and __pycache__ folder within whatson/migrations/
+COPY data-admin/whatson/migrations/*.py whatson/migrations/
 
 COPY docker-entrypoint.sh /
 
