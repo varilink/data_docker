@@ -17,10 +17,10 @@ services:
       # data
       - database:/database
 
-  perldoc:
+  pod2markdown:
 
-    build: tools/perldoc
-    image: varilink/perldoc
+    build: tools/pod2markdown
+    image: varilink/pod2markdown
     user: "1000:1000"
     command:
       - -c
