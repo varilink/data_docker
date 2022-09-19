@@ -13,7 +13,7 @@ use Mail::Chimp3;
 # -----------------
 
 my $cg = new Config::General(
-  -ConfigFile => '/usr/local/etc/app.cfg',
+  -ConfigFile => "$ENV{'DATA_CONF'}/app.cfg",
   -IncludeRelative => 1,
   -UseApacheInclude => 1
 );
