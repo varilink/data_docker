@@ -11,7 +11,7 @@ services:
       - ./tools/contacts/app.pl:/usr/local/src/app.pl
       - ./app/data-app/pm:/usr/local/lib/site_perl
       # configuration
-      - ./tools/contacts/app.cfg:/usr/local/etc/app.cfg
+      - ./tools/contacts/app.cfg:/app.cfg
       - ./data-int/:/int/
       # data
       - ./backup/:/database/
