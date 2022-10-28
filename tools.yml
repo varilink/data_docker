@@ -25,15 +25,15 @@ services:
     command:
       - -c
       - |-
-        rm -rf /app/perldoc/*
+        rm -rf /app/pod2markdown/*
         for ext in pl pm psgi
         do
           for fname in `find /app/$$ext/ -type f -name "*.$$ext"`
           do
             basename=`basename $$fname .$$ext`
             reldir=`dirname $$fname | cut -c6-`
-            mkdir -p "/app/perldoc/$$reldir/$$basename"
-            pod2markdown $$fname > "/app/perldoc/$$reldir/$$basename/README.md"
+            mkdir -p "/app/pod2markdown/$$reldir/$$basename"
+            pod2markdown $$fname > "/app/pod2markdown/$$reldir/$$basename/README.md"
           done
         done
     volumes:
