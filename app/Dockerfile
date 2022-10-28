@@ -90,6 +90,15 @@ RUN                                                                            \
     Ref::Util                                                                  \
     Type::Tiny::XS
 
+RUN                                                                            \
+  apt-get --yes --no-install-recommends install                                \
+    dovecot-imapd                                                              \
+    whois                                                                   && \
+  sed -i 's/^#disable_plaintext_auth = yes$/disable_plaintext_auth = no/'      \
+    /etc/dovecot/conf.d/10-auth.conf                                        && \
+  useradd --create-home username                                               \
+    --password `mkpasswd --method=md5 userpasswd`
+
 COPY docker-entrypoint.sh /
 
 RUN chmod +x /docker-entrypoint.sh

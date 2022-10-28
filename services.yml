@@ -72,6 +72,9 @@ services:
     environment:
       - DATA_APP_PORT
 
+    # Expose IMAP port to host for viewing emails in host's email client
+    ports: ["143:143"]
+
     volumes:
       # Mount a folder containing a recent backup. This should contain the app's
       # SQLite database, which is derbyartsandtheatre.db. The app service

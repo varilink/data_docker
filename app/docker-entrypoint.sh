@@ -17,4 +17,6 @@ then
 
 fi
 
+dovecot
+
 exec uwsgi "$@"
