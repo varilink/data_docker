@@ -12,8 +12,7 @@ services:
       - ./app/data-app/pm:/usr/local/lib/site_perl
       # configuration
       - ./tools/contacts/app.cfg:/usr/local/etc/app.cfg
-      - ./_private/mailchimp.cfg:/usr/local/etc/mailchimp.cfg
-      - ./_private/mailchimp/:/usr/local/etc/mailchimp/
+      - ./data-int/:/int/
       # data
       - database:/database
 
