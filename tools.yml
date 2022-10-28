@@ -14,7 +14,7 @@ services:
       - ./tools/contacts/app.cfg:/usr/local/etc/app.cfg
       - ./data-int/:/int/
       # data
-      - database:/database
+      - ./backup/:/database/
 
   pod2markdown:
 
