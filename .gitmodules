@@ -16,3 +16,6 @@
 [submodule "tools-proxy"]
 	path = tools/proxy
 	url = git@github.com:varilink/tools-proxy.git
+[submodule "tools/gimp"]
+	path = tools/gimp
+	url = git@github.com:varilink/tools-gimp.git
