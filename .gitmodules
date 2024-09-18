@@ -1,21 +1,21 @@
-[submodule "data-admin"]
-	path = admin/data-admin
-	url = git@github.com:varilink/data-admin.git
-[submodule "data-app"]
-	path = app/data-app
-	url = git@github.com:varilink/data-app.git
-[submodule "data-int"]
-	path = data-int
-	url = git:varilink/data-int
-[submodule "data-web"]
-	path = web/data-web
-	url = git@github.com:varilink/data-web.git
-[submodule "tools-npm"]
-	path = tools/npm
-	url = git@github.com:varilink/tools-npm.git
-[submodule "tools-proxy"]
-	path = tools/proxy
-	url = git@github.com:varilink/tools-proxy.git
+[submodule "data_admin"]
+	path = admin/data_admin
+	url = git@github.com:varilink/data_admin.git
+[submodule "data_app"]
+	path = app/data_app
+	url = git@github.com:varilink/data_app.git
+[submodule "data_int"]
+	path = data_int
+	url = git@git:data_int.git
+[submodule "data_web"]
+	path = web/data_web
+	url = git@github.com:varilink/data_web.git
 [submodule "tools/gimp"]
 	path = tools/gimp
-	url = git@github.com:varilink/tools-gimp.git
+	url = git@github.com:varilink/tools_gimp.git
+[submodule "tools/npm"]
+	path = tools/npm
+	url = git@github.com:varilink/tools_npm.git
+[submodule "tools/proxy"]
+	path = tools/proxy
+	url = git@github.com:varilink/tools_proxy.git
