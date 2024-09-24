@@ -38,12 +38,6 @@ services:
       - admin
       - proxy
 
-    # Join the web layer to both the project's default network and its proxy
-    # network - see https://github.com/varilink/tools-proxy#readme.
-    networks:
-      - default
-      - proxy
-
     volumes:
       # Mount a folder containing a recent backup. This should contain the
       # upload folder, which contains images uploaded for events. The web
