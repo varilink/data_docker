@@ -139,6 +139,11 @@ services:
       - ./web/data_web/media/website/:/website/
       - ./web/data_web/media/other/:/other/
 
+  npm:
+
+    volumes:
+      - ./web/data_web:/npm
+
   contacts:
 
     build: tools/contacts
