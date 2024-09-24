@@ -133,6 +133,7 @@ services:
       # See the comments associated with the django-static volume under the
       # volumes key below.
       - django-static:/static
+      - ./admin/data_admin/whatson/migrations:/data/whatson/migrations:ro
 
   # --------
   # 2. Build
