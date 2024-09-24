@@ -131,6 +131,14 @@ services:
       # volumes key below.
       - django-static:/static
 
+  gimp:
+
+    working_dir: /data-gimp/
+    volumes:
+      - ./web/data_web/gimp/:/data-gimp/
+      - ./web/data_web/media/website/:/website/
+      - ./web/data_web/media/other/:/other/
+
   contacts:
 
     build: tools/contacts
