@@ -12,3 +12,5 @@ COPY config.sh /docker-entrypoint.d/
 RUN                                                                            \
   chmod +x /docker-entrypoint.d/config.sh                                   && \
   rm /usr/share/nginx/html/*
+
+CMD [ "nginx-debug", "-g", "daemon off;" ]
