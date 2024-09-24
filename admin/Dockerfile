@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:bookworm
 LABEL maintainer='david.williamson@varilink.co.uk'
 
 # NOTE: rsync is only required in this container environment

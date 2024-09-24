@@ -1,5 +1,5 @@
 # Live deploymnet currently based on Debian buster
-FROM debian:buster
+FROM debian:bookworm
 LABEL maintainer='david.williamson@varilink.co.uk'
 
 # Install required Debian APT application packages then any CPAN modules that we
