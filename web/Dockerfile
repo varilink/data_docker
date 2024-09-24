@@ -7,8 +7,8 @@
 FROM nginx
 LABEL maintainer='david.williamson@varilink.co.uk'
 
-COPY upload-copy.sh /docker-entrypoint.d/
+COPY config.sh /docker-entrypoint.d/
 
 RUN                                                                            \
-  chmod +x /docker-entrypoint.d/upload-copy.sh                              && \
+  chmod +x /docker-entrypoint.d/config.sh                                   && \
   rm /usr/share/nginx/html/*
