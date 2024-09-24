@@ -2,7 +2,9 @@
 
 set -e # exit immediately if a command exits with a non-zero status
 
-if [[ ! -f /database/derbyartsandtheatre.db ]]
+if [[                                                                          \
+  -f /database/derbyartsandtheatre.db && -s /database/derbyartsandtheatre.db   \
+]]
 then
 
   # Copy to application from the backup
