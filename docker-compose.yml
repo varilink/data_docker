@@ -159,7 +159,7 @@ services:
   pod2markdown:
 
     build: tools/pod2markdown
-    image: varilink/pod2markdown
+    image: varilink/data/pod2markdown
     user: "1000:1000"
     command:
       - -c
