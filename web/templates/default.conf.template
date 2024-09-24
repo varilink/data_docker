@@ -1,98 +1,85 @@
 server {
 
-  listen      80 ;
-  listen      [::]:80 ;
-  server_name ${DATA_WEB_HOST} ;
+    listen      80;
+    listen      [::]:80;
+    server_name ${DATA_WEB_HOST};
 
-  location / {
+    location = /_auth {
 
-    include uwsgi_params ;
-  	uwsgi_modifier1 5 ;
-  	uwsgi_intercept_errors on ;
-  	uwsgi_pass ${DATA_APP_HOST}:${DATA_APP_PORT} ;
-  	error_page 404 =200 /not_found ;
-  	error_page 500 =200 /error ;
+# Authentication and authorisation handler, which is used to validate access to
+# the secure area of the website.
+
+        internal ;
+
+        include uwsgi_params;
+        uwsgi_modifier1 5;
+        uwsgi_pass ${DATA_APP_HOST}:${DATA_APP_PORT};
+
+        uwsgi_pass_request_body off ;
+        uwsgi_param CONTENT_LENGTH "" ;
+        uwsgi_param HTTP_X_CONFIG /usr/local/etc/data ;
+        uwsgi_param HTTP_X_ORIGINAL_URI $request_uri ;
+
+    }
+
+    location / {
+
+# Default location handling, which is overridden were required for specific
+# nested locations further down.
+
+        include uwsgi_params;
+        uwsgi_modifier1 5;
+        uwsgi_pass ${DATA_APP_HOST}:${DATA_APP_PORT};
+        uwsgi_intercept_errors on;
+        error_page 404 /not_found;
+        error_page 500 /error;
+
+    }
 
     location /secure {
 
-      #
-      # The secure area only accessible to admin and rep users
-      #
+# The secure area, which is only accessible to authenticated admin and rep
+# users, who then have different levels of access rights.
 
-      # Check request authorisation
-      auth_request /auth/request;
+        auth_request /_auth;
 
-      error_page 401 /account/sign_in ;
-      error_page 403 /unauthorised ;
+        include uwsgi_params;
+        uwsgi_modifier1 5;
+        uwsgi_pass ${DATA_APP_HOST}:${DATA_APP_PORT};
+        uwsgi_intercept_errors on;
 
-      uwsgi_pass ${DATA_APP_HOST}:${DATA_APP_PORT} ;
-
-      error_page 404 /not_found ;
-      error_page 500 /error ;
-
-    }
-
-    location = /auth/request {
-
-      #
-      # Authentication and authorisation handler
-      # Used to validate access to /secure
-      #
-
-      # location can only be used for internal requests
-      internal ;
-      # pass to the app to approve or deny access
-      uwsgi_pass ${DATA_APP_HOST}:${DATA_APP_PORT};
-      # do not pass the request body through to the proxy
-      uwsgi_pass_request_body off ;
-      # no request body so no content-length
-      uwsgi_param HTTP_CONTENT_LENGTH "" ;
-      proxy_set_header Host $host ;
-      uwsgi_param HTTP_X_CONFIG /usr/local/etc/data ;
-      proxy_set_header X-Original-URI $request_uri ;
+        error_page 404 /not_found;
+        error_page 500 /error;
+        error_page 401 /account/sign_in;
+        error_page 403 /unauthorised;
 
     }
 
-  }
+    location ~ ^/(assets|static) {
 
-  location /assets {
+# /assets contains website client assets such as stylesheets, images and
+# javascript. /static contains the static content used by the Django Admin
+# interface, which consists of stylesheets, fonts, images and javascript.
 
-    #
-    # Contains static content
-    #
+        root /usr/share/nginx/html;
 
-    root /usr/share/nginx/html ;
+    }
 
-  }
+    location /upload/img {
 
-  location /static {
+# Location for image files that are uploaded via the website and so the fully
+# resolved path must be writeable by Nginx.
 
-    #
-    # Contains static content
-    #
+        root / ;
 
-    root /usr/share/nginx/html ;
+    }
 
-  }
+    location /webmin {
 
-  location /upload/img {
+# The Django Admin service's dynamic content, which is served by Python.
 
-    #
-    # Static content which must be writable by nginx
-    #
+        proxy_pass http://${DATA_ADMIN_HOST}:${DATA_ADMIN_PORT} ;
 
-    root / ;
-
-  }
-
-  location /webmin {
-
-    #
-    # The Django administration service
-    #
-
-    proxy_pass http://${DATA_ADMIN_HOST}:${DATA_ADMIN_PORT} ;
-
-  }
+    }
 
 }
