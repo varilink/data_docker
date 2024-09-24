@@ -1,15 +1,32 @@
+# ------------------------------------------------------------------------------
+# docker-compose.yml
+# ------------------------------------------------------------------------------
+
+# Docker Compose services that combine to run and document the DATA website on
+# the developer desktop. These fall into four categories:
+#
+#   1. "Run" the website and associated Django admin interface:
+#     - web
+#     - app
+#     - admin
+#
+#   2. "Build" the website's front-end assets:
+#     - gimp
+#     - npm
+#
+#   3. "Document" the Perl web application that the website is based on:
+#     - pod2markdown
+#
+#   4. "Integrate" the website with third-party Cloud services:
+#     - contacts
+
+---
+
 services:
 
-  # ----------------------------------------------------------------------------
-  # Services that combine to run the DATA website on the developer desktop.
-  # These are:
-  #  1. web service
-  #  2. app service
-  #  3. admin service
-  # ----------------------------------------------------------------------------
-
-  # 1. web service
-  # --------------
+  # ------
+  # 1. Run
+  # ------
 
   web:
 
@@ -19,7 +36,7 @@ services:
 
     container_name: ${DATA_WEB_HOST} # fixed for varilink/tools-proxy access
 
-    # See the .env file for explanatory comments on all these variables
+    # See the .env file for explanatory comments on all these variables.
     environment:
       - WORKER_PROCESSES
       - ERROR_LOG_LEVEL
@@ -49,9 +66,6 @@ services:
       # See the comments associated with the django-static volume under the
       # volumes key below.
       - django-static:/usr/share/nginx/html/static/:ro
-
-  # 2. app service
-  # --------------
 
   app:
 
@@ -97,9 +111,6 @@ services:
       # The DATA batch scripts that implement the social media integrations.
       - ./app/data-app/pl/:/usr/local/src/:ro
 
-  # 3. admin service
-  # ----------------
-
   admin:
 
     build: ./admin
@@ -123,6 +134,10 @@ services:
       # volumes key below.
       - django-static:/static
 
+  # --------
+  # 2. Build
+  # --------
+
   gimp:
 
     working_dir: /data-gimp/
@@ -136,19 +151,9 @@ services:
     volumes:
       - ./web/data_web:/npm
 
-  contacts:
-
-    build: tools/contacts
-    image: varilink/data/contacts
-    volumes:
-      # app
-      - ./tools/contacts/app.pl:/usr/local/src/app.pl
-      - ./app/data-app/pm:/usr/local/lib/site_perl
-      # configuration
-      - ./tools/contacts/app.cfg:/app.cfg
-      - ./data-int/:/int/
-      # data
-      - ./backup/:/database/
+  # -----------
+  # 3. Document
+  # -----------
 
   pod2markdown:
 
@@ -171,6 +176,23 @@ services:
         done
     volumes:
       - ./app/data-app:/app
+
+  # ------------
+  # 4. Integrate
+  # ------------
+
+  contacts:
+
+    build: tools/contacts
+    volumes:
+      # app
+      - ./tools/contacts/app.pl:/usr/local/src/app.pl
+      - ./app/data_app/pm:/usr/local/lib/site_perl
+      # configuration
+      - ./tools/contacts/app.cfg:/app.cfg
+      - ./data_int/:/int/
+      # data
+      - ./backup/:/database/
 
 volumes:
 
