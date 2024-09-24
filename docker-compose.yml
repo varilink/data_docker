@@ -23,6 +23,8 @@ services:
 
     # See the .env file for explanatory comments on all these variables
     environment:
+      - WORKER_PROCESSES
+      - ERROR_LOG_LEVEL
       - DATA_WEB_HOST
       - DATA_APP_HOST
       - DATA_APP_PORT
