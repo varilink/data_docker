@@ -63,7 +63,7 @@ services:
 
     build: ./app
 
-    image: varilink/data/app
+    image: varilink/data/app:bookworm
 
     container_name: ${DATA_APP_HOST} # fixed for pass through from web layer
 
@@ -110,7 +110,7 @@ services:
 
     build: ./admin
 
-    image: varilink/data/admin
+    image: varilink/data/admin:bookworm
 
     container_name: ${DATA_ADMIN_HOST} # fixed for pass through from web layer
 
