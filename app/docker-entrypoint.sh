@@ -19,4 +19,4 @@ fi
 
 dovecot
 
-exec uwsgi "$@"
+exec gosu www-data uwsgi "$@"

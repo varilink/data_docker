@@ -13,6 +13,7 @@ RUN                                                                            \
     build-essential                                                            \
     cpanminus                                                                  \
     exim4-daemon-light                                                         \
+    gosu                                                                       \
     htmldoc                                                                    \
     libcanary-stability-perl                                                   \
     libcgi-application-dispatch-perl                                           \
@@ -97,7 +98,9 @@ RUN                                                                            \
   sed -i 's/^#disable_plaintext_auth = yes$/disable_plaintext_auth = no/'      \
     /etc/dovecot/conf.d/10-auth.conf                                        && \
   useradd --create-home username                                               \
-    --password `mkpasswd --method=md5 userpasswd`
+    --password `mkpasswd --method=md5 userpasswd`                           && \
+  mkdir /cookies                                                            && \
+  chown www-data:www-data /cookies
 
 COPY docker-entrypoint.sh /
 
