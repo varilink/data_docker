@@ -42,6 +42,10 @@ else
 
 fi
 
-dovecot # Start dovecot to provide email access in the container environment.
+ # Start dovecot to provide email access in the container environment via the
+ # Rouncube webmail client. 
+dovecot
+source /etc/apache2/envvars
+apache2
 
 exec gosu www-data uwsgi "$@"
