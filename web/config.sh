@@ -26,11 +26,8 @@ if [ "${ERROR_LOG_LEVEL}" ]; then
     /etc/nginx/nginx.conf
 fi
 
-if [ -d /upload ]
-then
-  echo 'Upload image directory already exists so skipping restore from backup'
-else
+if [ -z "$( ls -A '/usr/share/nginx/html/upload/' )" ]; then
   echo 'Restoring the upload image directory from the backup'
-  cp -rp /backup/upload /
-  chown -R www-data:www-data /upload
+  cp -rp /backup/upload/* /usr/share/nginx/html/upload/
+  chown -R www-data:www-data /usr/share/nginx/html/upload/
 fi

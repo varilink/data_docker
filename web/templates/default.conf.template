@@ -55,22 +55,13 @@ server {
 
     }
 
-    location ~ ^/(assets|static) {
+    location ~ ^/(assets|static|upload) {
 
 # /assets contains website client assets such as stylesheets, images and
 # javascript. /static contains the static content used by the Django Admin
 # interface, which consists of stylesheets, fonts, images and javascript.
 
         root /usr/share/nginx/html;
-
-    }
-
-    location /upload/img {
-
-# Location for image files that are uploaded via the website and so the fully
-# resolved path must be writeable by Nginx.
-
-        root / ;
 
     }
 

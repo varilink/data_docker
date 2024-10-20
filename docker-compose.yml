@@ -66,6 +66,8 @@ services:
       # See the comments associated with the django-static volume under the
       # volumes key below.
       - django-static:/usr/share/nginx/html/static/:ro
+      # Directory that holds user uploaded image files.
+      - upload:/usr/share/nginx/html/upload/
 
   app:
 
@@ -107,6 +109,8 @@ services:
       - ./web/data_web/dist/:/usr/share/nginx/html/assets/:ro
       # The DATA batch scripts that implement the social media integrations.
       - ./app/data_app/pl/:/usr/local/src/:ro
+      # Directory that holds user uploaded image files.
+      - upload:/upload
 
   admin:
 
@@ -203,3 +207,6 @@ volumes:
   # service populates this when it installs Django. The web service can then
   # serve this static content directly by having access to the same volume.
   django-static:
+
+  # Directory that holds user uploaded image files.
+  upload:
