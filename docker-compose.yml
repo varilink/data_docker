@@ -153,6 +153,11 @@ services:
     volumes:
       - ./web/data_web:/npm
 
+  npx:
+
+    volumes:
+      - ./web/data_web:/npm
+
   # -----------
   # 3. Document
   # -----------
