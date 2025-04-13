@@ -188,6 +188,32 @@ services:
   # 4. Integrate
   # ------------
 
+  cli:
+
+    build:
+      context: ./app
+      target: cli
+
+    image: varilink/data/cli
+
+    entrypoint: [ "perl" ]
+
+    environment:
+      - DATA_CONF=/usr/local/etc
+
+    working_dir: /usr/local/src/
+
+    volumes:
+      - ./app/conf/:/usr/local/etc/
+      - ./app/data_app/conf/:/usr/local/etc/app/:ro
+      - ./data_int/:/usr/local/etc/int/:ro
+      - ./app/data_app/pl/:/usr/local/src/:ro
+      - ./app/data_app/pm/:/usr/local/lib/site_perl/:ro
+      - ./app/data_app/packages:/packages:ro
+      - ./app/data_app/tt/:/usr/local/lib/tt/:ro
+      - ./inserts/:/inserts/:ro
+      - ./backup/:/database/:ro
+
   contacts:
 
     build: tools/contacts

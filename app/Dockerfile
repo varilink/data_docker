@@ -6,7 +6,7 @@
 
 # ------
 
-FROM debian:bookworm
+FROM debian:bookworm AS cli
 LABEL maintainer='david.williamson@varilink.co.uk'
 
 # Copy:
@@ -36,6 +36,8 @@ RUN                                                                            \
     `perl /yaml-to-string.pl cpan1`                                         && \
   cpanm --notest                                                               \
     `perl /yaml-to-string.pl cpan2`
+
+FROM cli AS full
 
 # We install dovecot-imapd for easy access to emails within the container
 # environment and the whois package provides the mkpasswd command that we then
