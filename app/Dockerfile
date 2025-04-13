@@ -32,9 +32,9 @@ RUN                                                                            \
     sqlite3                                                                 && \
   apt-get install --no-install-recommends --yes                                \
     `perl /yaml-to-string.pl deb`                                           && \
-  cpanm                                                                        \
+  cpanm --notest                                                               \
     `perl /yaml-to-string.pl cpan1`                                         && \
-  cpanm                                                                        \
+  cpanm --notest                                                               \
     `perl /yaml-to-string.pl cpan2`
 
 # We install dovecot-imapd for easy access to emails within the container
