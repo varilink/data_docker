@@ -48,4 +48,8 @@ dovecot
 source /etc/apache2/envvars
 apache2
 
-exec gosu www-data uwsgi "$@"
+exec gosu www-data uwsgi                                                       \
+  --ini /etc/uwsgi/apps-enabled/data-app.ini                                   \
+  --env DATA_APP_CONF_DIR=$DATA_APP_CONF_DIR                                   \
+  --env DATA_APP_CONF_FILE=$DATA_APP_CONF_FILE                                 \
+  "$@"

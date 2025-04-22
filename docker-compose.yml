@@ -77,9 +77,9 @@ services:
 
     container_name: ${DATA_APP_HOST} # fixed for pass through from web layer
 
-    command: [ "--ini" , "/etc/uwsgi/apps-enabled/data-app.ini" ]
-
     environment:
+      - DATA_APP_CONF_DIR
+      - DATA_APP_CONF_FILE
       - DATA_APP_PORT
 
     volumes:
@@ -199,7 +199,8 @@ services:
     entrypoint: [ "perl" ]
 
     environment:
-      - DATA_CONF=/usr/local/etc
+      - DATA_APP_CONF_DIR
+      - DATA_APP_CONF_FILE
 
     working_dir: /usr/local/src/
 
