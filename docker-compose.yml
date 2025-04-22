@@ -100,7 +100,7 @@ services:
       # The application based on CGI::Application and taken from the data-app
       # repository. Putting it in /usr/local/lib/site_perl ensures that it is
       # the Perl include path.
-      - ./app/data_app/pm/:/usr/local/lib/site_perl/:ro
+      - ./app/data_app/pm/:/usr/local/lib/site_perl/DATA/:ro
       # Template Toolkit templates taken from the data-templates repository.
       - ./app/data_app/tt/:/usr/local/lib/tt/:ro
       # The PSGI application launch scripts.
@@ -209,7 +209,7 @@ services:
       - ./app/data_app/conf/:/usr/local/etc/app/:ro
       - ./data_int/:/usr/local/etc/int/:ro
       - ./app/data_app/pl/:/usr/local/src/:ro
-      - ./app/data_app/pm/:/usr/local/lib/site_perl/:ro
+      - ./app/data_app/pm/:/usr/local/lib/site_perl/DATA/:ro
       - ./app/data_app/packages:/packages:ro
       - ./app/data_app/tt/:/usr/local/lib/tt/:ro
       - ./inserts/:/inserts/:ro
