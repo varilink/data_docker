@@ -191,7 +191,7 @@ services:
   # 4. Integrate
   # ------------
 
-  cli:
+  app-pl:
 
     build:
       context: ./app
