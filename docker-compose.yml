@@ -170,15 +170,18 @@ services:
     command:
       - -c
       - |-
-        rm -rf /app/pod2markdown/*
         for ext in pl pm psgi
         do
+          rm -rf /app/pod2markdown/$$ext
           for fname in `find /app/$$ext/ -type f -name "*.$$ext"`
           do
-            basename=`basename $$fname .$$ext`
-            reldir=`dirname $$fname | cut -c6-`
-            mkdir -p "/app/pod2markdown/$$reldir/$$basename"
-            pod2markdown $$fname > "/app/pod2markdown/$$reldir/$$basename/README.md"
+            if [ -n "$$(pod2markdown $$fname)" ]; then
+              basename=`basename $$fname .$$ext`
+              reldir=`dirname $$fname | cut -c6-`
+              mkdir -p "/app/pod2markdown/$$reldir/$$basename"
+              pod2markdown $$fname > \
+                "/app/pod2markdown/$$reldir/$$basename/README.md"
+            fi
           done
         done
     volumes:
