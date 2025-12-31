@@ -231,6 +231,10 @@ services:
       # data
       - ./backup/:/database/
 
+  uwsgitop:
+
+    build: tools/uwsgitop
+
 volumes:
 
   # SQLite databases
