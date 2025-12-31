@@ -2,8 +2,8 @@
 # docker-compose.yml
 # ------------------------------------------------------------------------------
 
-# Docker Compose services that combine to run and document the DATA website on
-# the developer desktop. These fall into four categories:
+# Docker Compose services for development and testing of the DATA web
+# application. These fall into four categories
 #
 #   1. "Run" the website and associated Django admin interface:
 #     - web
@@ -61,7 +61,7 @@ services:
       # Template file used to configure nginx - see "Using environment variables
       # in nginx configuration (new in 1.19)" in https://hub.docker.com/_/nginx.
       - ./web/templates:/etc/nginx/templates:ro
-      # Static content provided by the varilink/data-web repository.
+      # Website static content.
       - ./web/data_web/dist/:/usr/share/nginx/html/assets/:ro
       # See the comments associated with the django-static volume under the
       # volumes key below.
@@ -233,15 +233,11 @@ services:
 
 volumes:
 
-  # volume for SQLite databases that is shared by the app and admin services. It
-  # holds the bespoke application database as derbyartsandtheatre.db and the
-  # Django database as core.db.
+  # SQLite databases
   database:
 
-  # An external volume for the static content that comes with Django. The admin
-  # service populates this when it installs Django. The web service can then
-  # serve this static content directly by having access to the same volume.
+  # Django admin static content
   django-static:
 
-  # Directory that holds user uploaded image files.
+  # Uploaded image files.
   upload:
