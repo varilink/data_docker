@@ -76,7 +76,13 @@ RUN                                                                            \
   useradd --create-home username                                               \
     --password `mkpasswd --method=md5 userpasswd`                           && \
   mkdir /cookies                                                            && \
-  chown www-data:www-data /cookies
+  chown www-data:www-data /cookies                                          && \
+  python3 -m venv /root/.venv
+
+RUN bash -c "                                                                  \
+  source ~/.venv/bin/activate                                               && \
+  pip install wheel                                                         && \
+  pip install uwsgitop"
 
 # Setup the entrypoint.
 
