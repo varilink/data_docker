@@ -76,9 +76,11 @@ services:
     container_name: ${DATA_APP_HOST} # fixed for pass through from web layer
 
     environment:
-      - DATA_APP_CONF_DIR
-      - DATA_APP_CONF_FILE
-      - DATA_APP_PORT
+      <<: &env-app-common
+        DATA_APP_CONF_DIR: $DATA_APP_CONF_DIR
+        DATA_APP_CONF_FILE: $DATA_APP_CONF_FILE
+        DATA_APP_LOG_LEVEL: ${DATA_APP_LOG_LEVEL:-emergency}
+      DATA_APP_PORT: $DATA_APP_PORT
 
     volumes:
       # Configuration
@@ -196,8 +198,7 @@ services:
     entrypoint: [ "perl" ]
 
     environment:
-      - DATA_APP_CONF_DIR
-      - DATA_APP_CONF_FILE
+      <<: *env-app-common
 
     working_dir: /usr/local/src/
 
