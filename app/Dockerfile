@@ -22,7 +22,7 @@ COPY yaml-to-string.pl /
 # need that aren't packaged for Debian. All lib... APT packages are Perl modules
 # used by this web application. The sqlite3 APT package isn't used by this web
 # application but we use it to create a test admin user in the
-# docker-entrypoint.sh script. We also need to bring foward the install of the
+# docker-entrypoint.sh script. We also need to bring forward the install of the
 # libyaml-perl APT package as the yaml-to-string.pl script uses it.
 
 RUN                                                                            \
