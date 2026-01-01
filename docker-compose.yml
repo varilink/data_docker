@@ -43,6 +43,7 @@ services:
       - DATA_WEB_HOST
       - DATA_APP_HOST
       - DATA_APP_PORT
+      - DATA_ADMIN_WEB_HOST
       - DATA_ADMIN_HOST
       - DATA_ADMIN_PORT
 
