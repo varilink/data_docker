@@ -49,9 +49,9 @@ services:
 
     # Dependencies on upstream and downstream services.
     depends_on:
-      - app
-      - admin
-      - proxy
+      - proxy # downstream
+      - app   # upstream
+      - admin # upstream
 
     volumes:
       # Template file used to configure nginx - see "Using environment variables
