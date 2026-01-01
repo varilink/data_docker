@@ -55,7 +55,7 @@ server {
 
     }
 
-    location ~ ^/(assets|static|upload) {
+    location ~ ^/(assets|upload) {
 
 # /assets contains website client assets such as stylesheets, images and
 # javascript. /static contains the static content used by the Django Admin
