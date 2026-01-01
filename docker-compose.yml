@@ -13,11 +13,13 @@
 #   2. "Build" the website's front-end assets:
 #     - gimp
 #     - npm
+#     - npx
 #
 #   3. "Document" the Perl web application that the website is based on:
 #     - pod2markdown
 #
 #   4. "Integrate" the website with third-party Cloud services:
+#     - pl
 #     - contacts
 
 ---
@@ -36,7 +38,7 @@ services:
 
     container_name: ${DATA_WEB_HOST} # fixed for varilink/tools-proxy access
 
-    # See the .env file for explanatory comments on all these variables.
+    # See the .env file for an explanation of these variables.
     environment:
       - WORKER_PROCESSES
       - ERROR_LOG_LEVEL
@@ -47,8 +49,7 @@ services:
       - DATA_ADMIN_HOST
       - DATA_ADMIN_PORT
 
-    # The web layer passes requests through to the app and admin services and it
-    # sits behind the proxy service, so it depends on all three.
+    # Dependencies on upstream and downstream services.
     depends_on:
       - app
       - admin
