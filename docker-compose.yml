@@ -55,19 +55,15 @@ services:
       - proxy
 
     volumes:
-      # Mount a folder containing a recent backup. This should contain the
-      # upload folder, which contains images uploaded for events. The web
-      # service container will copy this to the path it uses for these uploads.
-      - ./backup/:/backup/:ro
       # Template file used to configure nginx - see "Using environment variables
       # in nginx configuration (new in 1.19)" in https://hub.docker.com/_/nginx.
       - ./web/templates:/etc/nginx/templates:ro
       # Website static content.
       - ./web/data_web/dist/:/usr/share/nginx/html/assets/:ro
-      # See the comments associated with the django-static volume under the
-      # volumes key below.
+      # Backup
+      - ./backup/:/backup/:ro
+      # Shared volumes, see below.
       - django-static:/usr/share/nginx/html/static/:ro
-      # Directory that holds user uploaded image files.
       - upload:/usr/share/nginx/html/upload/
 
   app:
@@ -84,33 +80,26 @@ services:
       - DATA_APP_PORT
 
     volumes:
-      # Mount a folder containing a recent backup. This should contain the app's
-      # SQLite database, which is derbyartsandtheatre.db. The app service
-      # container will copy this to the folder that it uses for SQLite database
-      # files.
+      # Configuration
+      - &vol-env-conf "./app/conf/:/usr/local/etc/"
+      - &vol-app-conf "./app/data_app/conf/:/usr/local/etc/app/:ro"
+      - &vol-int-conf "./data_int:/usr/local/etc/int/:ro"
+      # Perl scripts
+      - &vol-app-pl "./app/data_app/pl/:/usr/local/src/:ro"
+      # Perl modules
+      - &vol-app-pm "./app/data_app/pm/:/usr/local/lib/site_perl/DATA/:ro"
+      # Template Toolkit templates
+      - &vol-app-tt "./app/data_app/tt/:/usr/local/lib/tt/:ro"
+      # Backup
       - ./backup:/backup:ro
-      # See the comments associated with the database volume under the volumes
-      # key below.
-      - database:/database
-      # UWSGI application ini files.
+      # UWSGI config
       - ./app/uwsgi/:/etc/uwsgi/apps-enabled:ro
-      # Application configuration files
-      - ./app/conf/:/usr/local/etc/
-      - ./app/data_app/conf/:/usr/local/etc/app/:ro
-      - ./data_int:/usr/local/etc/int/:ro
-      # The application based on CGI::Application and taken from the data-app
-      # repository. Putting it in /usr/local/lib/site_perl ensures that it is
-      # the Perl include path.
-      - ./app/data_app/pm/:/usr/local/lib/site_perl/DATA/:ro
-      # Template Toolkit templates taken from the data-templates repository.
-      - ./app/data_app/tt/:/usr/local/lib/tt/:ro
-      # The PSGI application launch scripts.
+      # PSGI scripts
       - ./app/data_app/psgi/:/usr/local/sbin/:ro
-      # Stylesheets, images and Javascript files used by the website.
-      - ./web/data_web/dist/:/usr/share/nginx/html/assets/:ro
-      # The DATA batch scripts that implement the social media integrations.
-      - ./app/data_app/pl/:/usr/local/src/:ro
-      # Directory that holds user uploaded image files.
+      # HTML assets - the app service uses the logo.jpg in printed listings
+      - ./web/data_web/dist/:/assets/:ro
+      # Shared volumes, see below.
+      - database:/database
       - upload:/upload
 
   admin:
@@ -127,15 +116,13 @@ services:
       - DATA_ADMIN_PORT
 
     volumes:
-      # See the comments associated with the database volume under the volumes
-      # key below.
-      - database:/database
-      # UWSGI application ini files.
+      # UWSGI config
       - ./admin/uwsgi:/etc/uwsgi/apps-enabled:ro
-      # See the comments associated with the django-static volume under the
-      # volumes key below.
-      - django-static:/static
+      # Migrations
       - ./admin/data_admin/whatson/migrations:/data/whatson/migrations:ro
+      # Shared volumes, see below.
+      - database:/database
+      - django-static:/static
 
   # --------
   # 2. Build
@@ -214,15 +201,19 @@ services:
     working_dir: /usr/local/src/
 
     volumes:
-      - ./app/conf/:/usr/local/etc/
-      - ./app/data_app/conf/:/usr/local/etc/app/:ro
-      - ./data_int/:/usr/local/etc/int/:ro
-      - ./app/data_app/pl/:/usr/local/src/:ro
-      - ./app/data_app/pm/:/usr/local/lib/site_perl/DATA/:ro
-      - ./app/data_app/packages:/packages:ro
-      - ./app/data_app/tt/:/usr/local/lib/tt/:ro
-      - ./inserts/:/inserts/:ro
-      - ./backup/:/database/:ro
+      # Configuration
+      - *vol-env-conf
+      - *vol-app-conf
+      - *vol-int-conf
+      # Perl scripts
+      - *vol-app-pl
+      # Perl modules
+      - *vol-app-pm
+      # Template Toolkit templates
+      - *vol-app-tt
+      - ./backup:/database/:ro
+      - ./inputs/:/inputs/:ro
+      - ./outputs/:/outputs/
 
   contacts:
 
