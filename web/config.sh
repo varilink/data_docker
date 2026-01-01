@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # The entrypoint script for the Nginx image looks for shell scripts in the
-# /docker-entrypoin.d/ directory and runs them if it finds them. We copy this
+# /docker-entrypoint.d/ directory and runs them if it finds them. We copy this
 # shell script to that directory in order to customise the behaviour of the
 # web service container, which is based on the Nginx image.
 
@@ -19,10 +19,10 @@ if [ "${WORKER_PROCESSES}" ]; then
     /etc/nginx/nginx.conf
 fi
 
-if [ "${ERROR_LOG_LEVEL}" ]; then
-  echo "Setting Nginx log level to ${ERROR_LOG_LEVEL}"
+if [ "${DATA_WEB_ERROR_LOG_LEVEL}" ]; then
+  echo "Setting Nginx log level to ${DATA_WEB_ERROR_LOG_LEVEL}"
   log_file='\/var\/log\/nginx\/error.log'
-  sed -i "s/^error_log.*$/error_log  ${log_file} ${ERROR_LOG_LEVEL};/"         \
+  sed -i "s/^error_log.*$/error_log ${log_file} ${DATA_WEB_ERROR_LOG_LEVEL};/" \
     /etc/nginx/nginx.conf
 fi
 
