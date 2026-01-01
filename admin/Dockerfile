@@ -56,8 +56,8 @@ RUN                                                                            \
   python3 -m venv .venv                                                     && \
   source .venv/bin/activate                                                 && \
   pip3 install                                                                 \
-    ansible==10.4.0                                                            \
-    django==5.0.6                                                              \
+    ansible-core==2.19.2                                                       \
+    django==5.2.6                                                              \
     python-dateutil==2.9.0.post0                                            && \
   django-admin startproject data                                            && \
   cd data                                                                   && \
