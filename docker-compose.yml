@@ -36,8 +36,6 @@ services:
 
     image: varilink/data/web
 
-    container_name: ${DATA_WEB_HOST} # fixed for varilink/tools-proxy access
-
     # See the .env file for an explanation of these variables.
     environment:
       - WORKER_PROCESSES
@@ -67,6 +65,11 @@ services:
       - django-static:/usr/share/nginx/html/static/:ro
       - upload:/usr/share/nginx/html/upload/
 
+    networks:
+      default:
+        aliases: # for varilink/tools-proxy access
+          - ${DATA_WEB_HOST}
+          - ${DATA_ADMIN_WEB_HOST}
   app:
 
     build: ./app
