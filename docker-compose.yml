@@ -196,13 +196,13 @@ services:
   # 4. Integrate
   # ------------
 
-  app-pl:
+  pl:
 
     build:
       context: ./app
-      target: cli
+      target: pl
 
-    image: varilink/data/cli
+    image: varilink/data/pl
 
     entrypoint: [ "perl" ]
 
