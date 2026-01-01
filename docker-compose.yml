@@ -39,7 +39,7 @@ services:
     # See the .env file for an explanation of these variables.
     environment:
       - WORKER_PROCESSES
-      - ERROR_LOG_LEVEL
+      - DATA_WEB_ERROR_LOG_LEVEL
       - DATA_WEB_HOST
       - DATA_APP_HOST
       - DATA_APP_PORT
