@@ -143,6 +143,7 @@ services:
   gimp:
 
     working_dir: /data-gimp/
+
     volumes:
       - ./web/data_web/gimp/:/data-gimp/
       - ./web/data_web/media/website/:/website/
@@ -165,8 +166,11 @@ services:
   pod2markdown:
 
     build: tools/pod2markdown
+
     image: varilink/data/pod2markdown
+
     user: "1000:1000"
+
     command:
       - -c
       - |-
@@ -184,6 +188,7 @@ services:
             fi
           done
         done
+
     volumes:
       - ./app/data_app:/app
 
