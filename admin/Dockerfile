@@ -76,5 +76,7 @@ COPY data_admin/whatson/ data/whatson/
 
 RUN                                                                            \
   source .venv/bin/activate                                                 && \
-  ansible --extra-vars @/tmp/vars.yml --module-name template                   \
+  ansible -i localhost, -c local                                               \
+    -e 'ansible_python_interpreter=/usr/bin/python3'                           \
+    --extra-vars @/tmp/vars.yml --module-name template                         \
     --args 'src=/tmp/settings.py.j2 dest=data/data/settings.py' localhost
