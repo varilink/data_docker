@@ -1,3 +1,13 @@
+# ------------------------------------------------------------------------------
+# admin/vars.yml
+# ------------------------------------------------------------------------------
+
+# Variables for the creation of the admin service's settings.py file from a
+# Jinja template. We use this approach so that the template can shared between
+# Docker Compose and Ansible deployments.
+
+---
+
 admin_secret_key: "\
   django-insecure-zq7@^1_x5-d)o^ea0dr^3n+s+e@3ob0jx9)k)x&dz!6)sfsfft"
 admin_allowed_hosts: ["'admin'"]
