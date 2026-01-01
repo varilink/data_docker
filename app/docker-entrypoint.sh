@@ -46,6 +46,7 @@ fi
  # Roundcube webmail client. 
 dovecot
 source /etc/apache2/envvars
+rm -f /var/run/apache2/apache2.pid
 apache2
 
 exec gosu www-data uwsgi                                                       \
