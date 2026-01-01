@@ -62,16 +62,17 @@ RUN                                                                            \
   apt-get --yes --no-install-recommends install                                \
     apache2                                                                    \
     dovecot-imapd                                                              \
+    gosu                                                                       \
+    python3                                                                    \
+    python3-venv                                                               \
     roundcube                                                                  \
     roundcube-core                                                             \
-    roundcube-sqlite3                                                       && \
+    roundcube-sqlite3                                                          \
+    whois                                                                   && \
   sed -i 's/^#disable_plaintext_auth = yes$/disable_plaintext_auth = no/'      \
     /etc/dovecot/conf.d/10-auth.conf                                        && \
   sed -i 's/^#[ \t]*Alias/Alias/'                                              \
     /etc/apache2/conf-available/roundcube.conf                              && \
-  apt-get --yes --no-install-recommends install                                \
-    gosu                                                                       \
-    whois                                                                   && \
   useradd --create-home username                                               \
     --password `mkpasswd --method=md5 userpasswd`                           && \
   mkdir /cookies                                                            && \
