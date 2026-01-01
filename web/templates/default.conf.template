@@ -3,13 +3,12 @@ server {
     listen      80;
     listen      [::]:80;
     server_name ${DATA_WEB_HOST};
-
     location = /_auth {
 
 # Authentication and authorisation handler, which is used to validate access to
 # the secure area of the website.
 
-        internal ;
+        internal;
 
         include uwsgi_params;
         uwsgi_modifier1 5;
