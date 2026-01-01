@@ -2,4 +2,5 @@ data_admin_db_dir: /database
 data_admin_secret_key: "\
   django-insecure-zq7@^1_x5-d)o^ea0dr^3n+s+e@3ob0jx9)k)x&dz!6)sfsfft"
 data_admin_allowed_hosts: ["'admin'"]
+data_admin_csrf_trusted_origins: ["'http://admin'"]
 data_admin_static_url: /static/
