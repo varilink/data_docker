@@ -61,34 +61,7 @@ server {
 # javascript. /static contains the static content used by the Django Admin
 # interface, which consists of stylesheets, fonts, images and javascript.
 
-        root /usr/share/nginx/html;
-
-    }
-
-}
-
-server {
-
-    listen      80;
-    listen      [::]:80;
-    server_name ${DATA_ADMIN_WEB_HOST};
-
-    location ~ /static/ {
-
-        root /usr/share/nginx/html;
-
-    }
-
-    location / {
-
-# The Django Admin service's dynamic content, which is served by Python.
-
-        proxy_pass http://${DATA_ADMIN_HOST}:${DATA_ADMIN_PORT};
-
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-Host $host;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Real-IP $remote_addr;
+        root /var/www/${DATA_WEB_HOST}/html;
 
     }
 
