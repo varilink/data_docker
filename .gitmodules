@@ -1,5 +1,5 @@
 [submodule "data_admin"]
-	path = admin_app/data_admin
+	path = admin-app/data_admin
 	url = git@github.com:varilink/data_admin.git
 [submodule "data_app"]
 	path = app/data_app
