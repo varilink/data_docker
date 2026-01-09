@@ -3,34 +3,39 @@
 # ------------------------------------------------------------------------------
 
 # Docker Compose services for development and testing of the DATA web
-# application. These fall into four categories
+# application and associated Django admin interface. These fall into four
+# categories:
 #
-#   1. "Run" the website and associated Django admin interface:
+#   1. The DATA web application:
 #     - web
 #     - app
-#     - admin
 #
-#   2. "Build" the website's front-end assets:
+#   2. Django admin interface:
+#     - admin-web
+#     - admin-app
+#
+#   3. DATA web application client asset build commands:
 #     - gimp
 #     - npm
 #     - npx
 #
-#   3. "Document" the Perl web application that the website is based on:
-#     - pod2markdown
-#
-#   4. "Integrate" the website with third-party Cloud services:
-#     - pl
+#   4. Other miscellaneous CLI utilities:
 #     - contacts
+#     - pl
+#     - pod2markdown
+#     - uwsgitop
 
 ---
 
 services:
 
-  # ------
-  # 1. Run
-  # ------
+  # -----------------------
+  # 1. DATA web application
+  # -----------------------
 
   web:
+
+    profiles: ['data']
 
     build: ./web
 
@@ -39,51 +44,46 @@ services:
     # See the .env file for an explanation of these variables.
     environment:
       - WORKER_PROCESSES
-      - DATA_WEB_ERROR_LOG_LEVEL
       - DATA_WEB_HOST
       - DATA_APP_HOST
       - DATA_APP_PORT
-      - DATA_ADMIN_WEB_HOST
-      - DATA_ADMIN_HOST
-      - DATA_ADMIN_PORT
-
-    # Dependencies on upstream and downstream services.
-    depends_on:
-      - proxy # downstream
-      - app   # upstream
-      - admin # upstream
 
     volumes:
       # Template file used to configure nginx - see "Using environment variables
       # in nginx configuration (new in 1.19)" in https://hub.docker.com/_/nginx.
-      - ./web/templates:/etc/nginx/templates:ro
+      - "./web/templates/data.conf.template:\
+        /etc/nginx/templates/data.conf.template:ro"
       # Website static content.
-      - ./web/data_web/dist/:/usr/share/nginx/html/assets/:ro
+      - ./web/data_web/dist/:/var/www/${DATA_WEB_HOST}/html/assets/:ro
       # Backup
       - ./backup/:/backup/:ro
       # Shared volumes, see below.
-      - django-static:/usr/share/nginx/html/static/:ro
-      - upload:/usr/share/nginx/html/upload/
+      - upload:/var/www/${DATA_WEB_HOST}/html/upload/
 
     networks:
       default:
         aliases: # for varilink/tools-proxy access
           - ${DATA_WEB_HOST}
-          - ${DATA_ADMIN_WEB_HOST}
   app:
 
-    build: ./app
+    profiles: ['data']
+
+    build:
+      context: ./app
+      args:
+        DATA_APP_HOST: ${DATA_APP_HOST}
 
     image: varilink/data/app:bookworm
 
-    container_name: ${DATA_APP_HOST} # fixed for pass through from web layer
-
+    # See the .env file for an explanation of these variables.
     environment:
+      # Environment variables that are also passed to Perl CLI commands.
       <<: &env-app-common
-        DATA_APP_CONF_DIR: $DATA_APP_CONF_DIR
-        DATA_APP_CONF_FILE: $DATA_APP_CONF_FILE
-        DATA_APP_LOG_LEVEL: ${DATA_APP_LOG_LEVEL:-emergency}
-      DATA_APP_PORT: $DATA_APP_PORT
+        DATA_APP_CONF_DIR: ${DATA_APP_CONF_DIR}
+        DATA_APP_CONF_FILE: ${DATA_APP_CONF_FILE}
+        DATA_APP_LOG_LEVEL: ${DATA_APP_LOG_LEVEL}
+      DATA_APP_HOST: ${DATA_APP_HOST}
+      DATA_APP_PORT: ${DATA_APP_PORT}
 
     volumes:
       # Configuration
@@ -99,42 +99,85 @@ services:
       # Backup
       - ./backup:/backup:ro
       # UWSGI config
-      - ./app/uwsgi/:/etc/uwsgi/apps-enabled:ro
+      - ./app/data-app.ini/:/etc/uwsgi/apps-enabled/data-app.ini:ro
       # PSGI scripts
       - ./app/data_app/psgi/:/usr/local/sbin/:ro
       # HTML assets - the app service uses the logo.jpg in printed listings
-      - ./web/data_web/dist/:/assets/:ro
+      - ./web/data_web/dist/:/var/www/${DATA_WEB_HOST}/html/assets/:ro
       # Shared volumes, see below.
-      - database:/database
-      - upload:/upload
+      - database:/var/www/${DATA_APP_HOST}/database/
+      - upload:/var/www/${DATA_WEB_HOST}/html/upload/
 
-  admin:
+  # -------------------------
+  # 2. Django admin interface
+  # -------------------------
 
-    build: ./admin
+  admin-web:
 
-    image: varilink/data/admin:bookworm
+    profiles: ["admin"]
 
-    container_name: ${DATA_ADMIN_HOST} # fixed for pass through from web layer
+    build: ./admin-web
 
-    command: [ "--ini" , "/etc/uwsgi/apps-enabled/data-admin.ini" ]
+    image: varilink/data/admin-web
 
+    # See the .env file for an explanation of these variables.
     environment:
-      - DATA_ADMIN_PORT
+      - WORKER_PROCESSES
+      - DATA_ADMIN_WEB_HOST
+      - DATA_ADMIN_APP_HOST
+      - DATA_ADMIN_APP_PORT
+
+    volumes:
+      # Template file used to configure nginx - see "Using environment variables
+      # in nginx configuration (new in 1.19)" in https://hub.docker.com/_/nginx.
+      - "./admin_web/admin.conf.template:\
+        /etc/nginx/templates/admin.conf.template:ro"
+      # Shared volumes, see below.
+      - django-static:/var/www/$DATA_ADMIN_WEB_HOST/html/static/
+
+    networks:
+      default:
+        aliases: # for varilink/tools-proxy access
+          - ${DATA_ADMIN_WEB_HOST}
+
+  admin-app:
+
+    profiles: ["admin"]
+
+    build:
+      context: ./admin-app
+      args:
+        DATA_ADMIN_APP_HOST: ${DATA_ADMIN_APP_HOST}
+        DATA_ADMIN_WEB_HOST: ${DATA_ADMIN_WEB_HOST}
+        DATA_APP_HOST: ${DATA_APP_HOST}
+
+    image: varilink/data/admin-app:bookworm
+
+    # See the .env file for an explanation of these variables.
+    environment:
+      - DATA_ADMIN_APP_PORT
 
     volumes:
       # UWSGI config
-      - ./admin/uwsgi:/etc/uwsgi/apps-enabled:ro
+      - ./admin_app/data-admin.in:/etc/uwsgi/apps-enabled/data-admin.ini:ro
+      # Perl modules
+      - &vol-app-pm "./app/data_app/pm/:/usr/local/lib/site_perl/DATA/:ro"
+      # Template Toolkit
+      - ./admin_app/uwsgi:/etc/uwsgi/apps-enabled:ro
       # Migrations
-      - ./admin/data_admin/whatson/migrations:/data/whatson/migrations:ro
+      - "./admin_app/data_admin/whatson/migrations/:\
+        /var/www/${DATA_ADMIN_APP_HOST}/whatson/migrations/:ro"
       # Shared volumes, see below.
-      - database:/database
-      - django-static:/static
+      - database:/var/www/${DATA_APP_HOST}/database/
+      - django-static:/var/www/$DATA_ADMIN_WEB_HOST/html/static/
 
-  # --------
-  # 2. Build
-  # --------
+  # ---------------------------------------------------
+  # 3. DATA web application client asset build commands
+  # ---------------------------------------------------
 
   gimp:
+
+    profiles: ["manual"]
 
     working_dir: /data-gimp/
 
@@ -145,52 +188,40 @@ services:
 
   npm:
 
+    profiles: ["manual"]
+
     volumes:
       - ./web/data_web:/npm
 
   npx:
 
+    profiles: ["manual"]
+
     volumes:
       - ./web/data_web:/npm
 
-  # -----------
-  # 3. Document
-  # -----------
+  # ------------------------------------
+  # 4. Other miscellaneous CLI utilities
+  # ------------------------------------
 
-  pod2markdown:
+  contacts:
 
-    build: tools/pod2markdown
+    profiles: ["manual"]
 
-    image: varilink/data/pod2markdown
-
-    user: "1000:1000"
-
-    command:
-      - -c
-      - |-
-        for ext in pl pm psgi
-        do
-          rm -rf /app/pod2markdown/$$ext
-          for fname in `find /app/$$ext/ -type f -name "*.$$ext"`
-          do
-            if [ -n "$$(pod2markdown $$fname)" ]; then
-              basename=`basename $$fname .$$ext`
-              reldir=`dirname $$fname | cut -c6-`
-              mkdir -p "/app/pod2markdown/$$reldir/$$basename"
-              pod2markdown $$fname > \
-                "/app/pod2markdown/$$reldir/$$basename/README.md"
-            fi
-          done
-        done
-
+    build: tools/contacts
     volumes:
-      - ./app/data_app:/app
-
-  # ------------
-  # 4. Integrate
-  # ------------
+      # app
+      - ./tools/contacts/app.pl:/usr/local/src/app.pl
+      - ./app/data_app/pm:/usr/local/lib/site_perl
+      # configuration
+      - ./tools/contacts/app.cfg:/app.cfg
+      - ./data_int/:/int/
+      # data
+      - ./backup/:/database/
 
   pl:
+
+    profiles: ["manual"]
 
     build:
       context: ./app
@@ -220,24 +251,48 @@ services:
       - ./inputs/:/inputs/:ro
       - ./outputs/:/outputs/
 
-  contacts:
+  pod2markdown:
 
-    build: tools/contacts
+    profiles: ["manual"]
+
+    build: tools/pod2markdown
+
+    image: varilink/data/pod2markdown
+
+    user: "1000:1000"
+
+    command:
+      - -c
+      - |-
+        for ext in pl pm psgi
+        do
+          rm -rf /app/pod2markdown/$$ext
+          for fname in `find /app/$$ext/ -type f -name "*.$$ext"`
+          do
+            if [ -n "$$(pod2markdown $$fname)" ]; then
+              basename=`basename $$fname .$$ext`
+              reldir=`dirname $$fname | cut -c6-`
+              mkdir -p "/app/pod2markdown/$$reldir/$$basename"
+              pod2markdown $$fname > \
+                "/app/pod2markdown/$$reldir/$$basename/README.md"
+            fi
+          done
+        done
+
     volumes:
-      # app
-      - ./tools/contacts/app.pl:/usr/local/src/app.pl
-      - ./app/data_app/pm:/usr/local/lib/site_perl
-      # configuration
-      - ./tools/contacts/app.cfg:/app.cfg
-      - ./data_int/:/int/
-      # data
-      - ./backup/:/database/
+      - ./app/data_app:/app
 
   uwsgitop:
+
+    profiles: ["manual"]
 
     build: tools/uwsgitop
 
 volumes:
+
+  # These are all defined as named volumes because their content is shared
+  # across more than one service above and is generated internally by one of
+  # those services rather than being mapped from the Docker host.
 
   # SQLite databases
   database:

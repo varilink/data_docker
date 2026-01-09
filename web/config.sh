@@ -7,11 +7,11 @@
 # The entrypoint script for the Nginx image looks for shell scripts in the
 # /docker-entrypoint.d/ directory and runs them if it finds them. We copy this
 # shell script to that directory in order to customise the behaviour of the
-# web service container, which is based on the Nginx image.
+# app web service container, which is based on the Nginx image.
 
 # ------
 
-echo 'Running the project Nginx configuration script'
+echo 'Running the project Nginx configuration script for the web app service'
 
 if [ "${WORKER_PROCESSES}" ]; then
   echo "Overriding default Nginx worker processes to ${WORKER_PROCESSES}"
@@ -26,8 +26,8 @@ if [ "${DATA_WEB_ERROR_LOG_LEVEL}" ]; then
     /etc/nginx/nginx.conf
 fi
 
-if [ -z "$( ls -A '/usr/share/nginx/html/upload/' )" ]; then
+if [ -z "$( ls -A \"/var/www/${DATA_WEB_HOST}/html/upload/\" )" ]; then
   echo 'Restoring the upload image directory from the backup'
-  cp -rp /backup/upload/* /usr/share/nginx/html/upload/
-  chown -R www-data:www-data /usr/share/nginx/html/upload/
+  cp -rp /backup/upload/* /var/www/${DATA_WEB_HOST}/html/upload/
+  chown -R www-data:www-data /var/www/${DATA_WEB_HOST}/html/upload/
 fi

@@ -9,7 +9,7 @@
 set -e # exit immediately if a command exits with a non-zero status
 
 if [[                                                                          \
-  -f /database/derbyartsandtheatre.db && -s /database/derbyartsandtheatre.db   \
+  -f database/derbyartsandtheatre.db && -s database/derbyartsandtheatre.db     \
 ]]
 then
 
@@ -29,13 +29,12 @@ else
 
   # Copy the web application's database from the backup.
 
-  cp /backup/derbyartsandtheatre.db /database/
-  chown www-data:www-data /database/derbyartsandtheatre.db
+  gosu www-data cp /backup/derbyartsandtheatre.db database/
 
   # Set every user's password to "password" for our testing purposes. We
   # actually store the md5 hash of the password.
 
-	sqlite3 /database/derbyartsandtheatre.db <<- EOF
+	gosu www-data sqlite3 database/derbyartsandtheatre.db <<- EOF
 	UPDATE user
 		SET password = '5f4dcc3b5aa765d61d8327deb882cf99'
 	EOF
@@ -53,4 +52,6 @@ exec gosu www-data uwsgi                                                       \
   --ini /etc/uwsgi/apps-enabled/data-app.ini                                   \
   --env DATA_APP_CONF_DIR=$DATA_APP_CONF_DIR                                   \
   --env DATA_APP_CONF_FILE=$DATA_APP_CONF_FILE                                 \
+  --env DATA_APP_HOST=$DATA_APP_HOST                                           \
+  --env DATA_APP_LOG_LEVEL=$DATA_APP_LOG_LEVEL                                 \
   "$@"

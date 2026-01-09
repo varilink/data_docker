@@ -38,6 +38,8 @@ RUN                                                                            \
     `perl /yaml-to-string.pl cpan2`
 
 FROM pl AS full
+LABEL maintainer='david.williamson@varilink.co.uk'
+ARG DATA_APP_HOST
 
 # We install dovecot-imapd for easy access to emails within the container
 # environment and the whois package provides the mkpasswd command that we then
@@ -77,12 +79,16 @@ RUN                                                                            \
     --password `mkpasswd --method=md5 userpasswd`                           && \
   mkdir /cookies                                                            && \
   chown www-data:www-data /cookies                                          && \
-  python3 -m venv /root/.venv
+  python3 -m venv /root/.venv                                               && \
+  mkdir -p /var/www/${DATA_APP_HOST}/database/                                           && \
+  chown www-data:www-data /var/www/${DATA_APP_HOST}/database/
 
 RUN bash -c "                                                                  \
   source ~/.venv/bin/activate                                               && \
   pip install wheel                                                         && \
   pip install uwsgitop"
+
+WORKDIR /var/www/${DATA_APP_HOST}/
 
 # Setup the entrypoint.
 

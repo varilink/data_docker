@@ -3,15 +3,25 @@
 # ------------------------------------------------------------------------------
 
 # Variables for the creation of the admin service's settings.py file from a
-# Jinja template. We use this approach so that the template can shared between
-# Docker Compose and Ansible deployments.
+# Jinja template. We use this approach so that the template can be shared
+# between Docker Compose and Ansible deployments.
 
 ---
 
+# It's okay to expose the Django secret key here because the Docker Compose
+# project in this instance is only intended to be run on the developer desktop.
 admin_secret_key: "\
   django-insecure-zq7@^1_x5-d)o^ea0dr^3n+s+e@3ob0jx9)k)x&dz!6)sfsfft"
-admin_allowed_hosts: ["'admin'"]
-admin_csrf_trusted_origins: ["'http://admin'"]
+
+admin_allowed_hosts: ["'{{ lookup('env', 'DATA_ADMIN_WEB_HOST') }}'"]
+admin_csrf_trusted_origins: 
+  - "'http://{{ lookup('env', 'DATA_ADMIN_WEB_HOST') }}'"
+
+# Hostname for the core DATA web application
+app_hostname: "{{ lookup('env', 'DATA_APP_HOST') }}"
+
+# Web and app hostnames for the Django Admin service
+admin_web_hostname: "{{ lookup('env', 'DATA_ADMIN_WEB_HOST') }}"
+admin_app_hostname: "{{ lookup('env', 'DATA_ADMIN_APP_HOST') }}"
+
 admin_static_url: /static/
-server_name: data
-admin_server_name: admin
