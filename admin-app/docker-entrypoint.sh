@@ -32,7 +32,7 @@ fi
 # is updated to reflect any changes to the Djano static files.
 
 source .venv/bin/activate
-python3 manage.py migrate whatson --database 
+python3 manage.py migrate whatson --database default
 python3 manage.py collectstatic --noinput
 deactivate
 
