@@ -36,6 +36,7 @@ python3 manage.py migrate whatson --database default
 python3 manage.py collectstatic --noinput
 deactivate
 
-exec uwsgi                                                                     \
+exec gosu www-data uwsgi                                                       \
   --ini /etc/uwsgi/apps-enabled/data-admin.ini                                 \
-  --env DATA_ADMIN_APP_PORT=$DATA_ADMIN_APP_PORT "$@"
+  --env DATA_ADMIN_APP_PORT=$DATA_ADMIN_APP_PORT                               \
+  "$@"

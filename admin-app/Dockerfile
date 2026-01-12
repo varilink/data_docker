@@ -22,6 +22,7 @@ RUN                                                                            \
   # Install system packages
   apt-get update                                                            && \
   apt-get --yes --no-install-recommends install                                \
+    gosu                                                                       \
     python3                                                                    \
     python3-pip                                                                \
     python3-venv                                                               \
@@ -65,5 +66,4 @@ COPY data_admin/whatson/migrations/*.py                                        \
 # Set up the Docker entrypoint and its context.
 COPY docker-entrypoint.sh /
 ENTRYPOINT [ "bash", "/docker-entrypoint.sh" ]
-USER www-data
 WORKDIR /var/www/${DATA_ADMIN_APP_HOST}/django/
