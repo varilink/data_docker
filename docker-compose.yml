@@ -245,7 +245,9 @@ services:
       - *vol-app-pm
       # Template Toolkit templates
       - *vol-app-tt
-      - ./backup:/database/:ro
+      # Shared volumes, see below.
+      - database:/var/www/${DATA_APP_HOST}/database/
+      - upload:/var/www/${DATA_WEB_HOST}/html/upload/
       - ./inputs/:/inputs/:ro
       - ./outputs/:/outputs/
 
