@@ -248,6 +248,7 @@ services:
       # Shared volumes, see below.
       - database:/var/www/${DATA_APP_HOST}/database/
       - upload:/var/www/${DATA_WEB_HOST}/html/upload/
+      # Command file inputs and outputs
       - ./inputs/:/inputs/:ro
       - ./outputs/:/outputs/
 

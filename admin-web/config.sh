@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# admin_web/config.sh
+# admin-web/config.sh
 # ------------------------------------------------------------------------------
 
 # The entrypoint script for the Nginx image looks for shell scripts in the
