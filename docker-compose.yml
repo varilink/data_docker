@@ -135,7 +135,7 @@ services:
     volumes:
       # Template file used to configure nginx - see "Using environment variables
       # in nginx configuration (new in 1.19)" in https://hub.docker.com/_/nginx.
-      - "./admin_web/admin.conf.template:\
+      - "./admin-web/admin.conf.template:\
         /etc/nginx/templates/admin.conf.template:ro"
       # Shared volumes, see below.
       - django-static:/var/www/$DATA_ADMIN_WEB_HOST/html/static/
@@ -164,7 +164,7 @@ services:
 
     volumes:
       # UWSGI config
-      - ./admin_app/data-admin.in:/etc/uwsgi/apps-enabled/data-admin.ini:ro
+      - ./admin-app/data-admin.ini:/etc/uwsgi/apps-enabled/data-admin.ini:ro
       # Shared volumes, see below.
       - database:/var/www/${DATA_APP_HOST}/database/
       - django-static:/var/www/$DATA_ADMIN_WEB_HOST/html/static/
