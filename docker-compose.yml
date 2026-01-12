@@ -165,10 +165,6 @@ services:
     volumes:
       # UWSGI config
       - ./admin_app/data-admin.in:/etc/uwsgi/apps-enabled/data-admin.ini:ro
-      # Perl modules
-      - &vol-app-pm "./app/data_app/pm/:/usr/local/lib/site_perl/DATA/:ro"
-      # Template Toolkit
-      - ./admin_app/uwsgi:/etc/uwsgi/apps-enabled:ro
       # Shared volumes, see below.
       - database:/var/www/${DATA_APP_HOST}/database/
       - django-static:/var/www/$DATA_ADMIN_WEB_HOST/html/static/
