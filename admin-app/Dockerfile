@@ -59,7 +59,8 @@ RUN                                                                            \
 # Complete the setup of the Django data project and whatson application.
 COPY data_admin/data/urls.py /var/www/${DATA_ADMIN_APP_HOST}/django/data/
 COPY data_admin/whatson/*.py /var/www/${DATA_ADMIN_APP_HOST}/django/whatson/
-
+COPY data_admin/whatson/migrations/*.py                                        \
+  /var/www/${DATA_ADMIN_APP_HOST}/django/whatson/migrations/
 
 # Set up the Docker entrypoint and its context.
 COPY docker-entrypoint.sh /

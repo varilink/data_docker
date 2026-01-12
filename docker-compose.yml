@@ -169,9 +169,6 @@ services:
       - &vol-app-pm "./app/data_app/pm/:/usr/local/lib/site_perl/DATA/:ro"
       # Template Toolkit
       - ./admin_app/uwsgi:/etc/uwsgi/apps-enabled:ro
-      # Migrations
-      - "./admin_app/data_admin/whatson/migrations/:\
-        /var/www/${DATA_ADMIN_APP_HOST}/whatson/migrations/:ro"
       # Shared volumes, see below.
       - database:/var/www/${DATA_APP_HOST}/database/
       - django-static:/var/www/$DATA_ADMIN_WEB_HOST/html/static/
