@@ -108,6 +108,11 @@ services:
       - database:/var/www/${DATA_APP_HOST}/database/
       - upload:/var/www/${DATA_WEB_HOST}/html/upload/
 
+    networks:
+      default:
+        aliases: # for varilink/tools-proxy access
+          - webmail
+
   # -------------------------
   # 2. Django admin interface
   # -------------------------
